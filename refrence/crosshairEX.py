@@ -13,6 +13,7 @@ win.addItem(label)
 p1 = win.addPlot(row=1, col=0)
 p2 = win.addPlot(row=2, col=0)
 
+
 region = pg.LinearRegionItem()
 region.setZValue(10)
 # Add the LinearRegionItem to the ViewBox, but tell the ViewBox to exclude this 
