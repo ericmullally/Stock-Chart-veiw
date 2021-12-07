@@ -1,11 +1,12 @@
 
 import sys
+from PySide6.QtGui import QCursor
 import pyqtgraph as pg
 import pandas as pd
 
 from PySide6.QtWidgets import QMainWindow
+from PySide6 import QtCore
 from ui_files.chartView import Ui_MainWindow
-from datetime import date
 from json import loads
 from refrence.timeRef import MyStringAxis
 
@@ -21,6 +22,12 @@ class Window(QMainWindow):
         self.yData = self.dataTuple[1]
         self.xData = self.dataTuple[0]
         self.setPlots()
+        self.vLine = pg.InfiniteLine(angle=90, movable=False)
+        self.plot1.addItem(self.vLine, ignoreBounds=True)
+        self.proxy = pg.SignalProxy(self.plot1.scene().sigMouseMoved, rateLimit=60, slot=self.mouseMoved)
+        self.ui.searchBtn.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
+        self.ui.resetChart.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
+        self.ui.analyzeBtn.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
 
         
       
@@ -30,6 +37,9 @@ class Window(QMainWindow):
         minX, maxX = self.region.getRegion()
         self.plot1.setXRange(minX, maxX, padding=0)    
 
+    #this will replace getData
+    def serachBtnClick(self) -> tuple: 
+        pass
 
     def getData(self):
         with(open("data.txt") as dataFile):
@@ -57,7 +67,27 @@ class Window(QMainWindow):
         self.plot1.plot(list(xDict.keys()), self.yData)
         self.region.setRegion((0,  len(self.xData) * .1 ))
 
+        
 
+    
+    # this paints the verticle line in plot 1.
+    # but it is buggy when the zoom is increased or decreased.
+    # this seems to be a bug with pyqtgraph.
+    def mouseMoved(self,evt):
+        vb = self.plot1.vb
+        pos = evt[0]  ## using signal proxy turns original arguments into a tuple
+        if self.plot1.sceneBoundingRect().contains(pos):
+            mousePoint = vb.mapSceneToView(pos)
+            index = int(mousePoint.x())
+            if index > 0 and index < len(self.xData):
+                self.ui.priceLabel.setText("<span style='font-size: 12pt; color:white;'>Date=%s,   <span style='color: green'>Price=%0.1f</span>" % (self.xData[index], self.yData[index]))
+                self.vLine.setPos(mousePoint.x())
+        
+    def resetChartClick(self):
+        pass
+
+    def analyzeBtnClick(self):
+        pass
 
 if __name__ == "__main__":
     app = pg.mkQApp("test")
