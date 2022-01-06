@@ -79,9 +79,9 @@ class Window(QMainWindow):
                 self.vLine.setPos(mousePoint.x())
         
     def resetChartClick(self, event):
-        self.plot2.setXRange(0, len(self.dataTuple[0]), padding=0)
-        self.plot2.setYRange(0, max(self.dataTuple[1]), padding=0)
-        self.plot1.setYRange(0, max(self.dataTuple[1]), padding=0)
+        self.plot2.setXRange(0, len(self.dataTuple[0]), padding=.03)
+        self.plot2.setYRange(0, max(self.dataTuple[1]) + 20, padding=0)
+        self.plot1.setYRange(0, max(self.dataTuple[1]) + 20, padding=0)
         self.region.setRegion((0,  len(self.xData) * .1 ))
         
         minX, maxX = self.region.getRegion()
