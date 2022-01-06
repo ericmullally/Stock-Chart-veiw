@@ -28,9 +28,8 @@ class Window(QMainWindow):
         self.ui.searchBtn.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
         self.ui.resetChart.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
         self.ui.analyzeBtn.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
-
-        
-      
+        self.ui.resetChart.clicked.connect(self.resetChartClick)
+   
        
     def update(self):
         self.region.setZValue(10)
@@ -49,7 +48,6 @@ class Window(QMainWindow):
             
         return ([dateI[0] for dateI in dates], [closingP[0] for closingP in closing ] )
 
-
     def setPlots(self):
         self.region = pg.LinearRegionItem()
         self.region.setZValue(10)
@@ -67,9 +65,6 @@ class Window(QMainWindow):
         self.plot1.plot(list(xDict.keys()), self.yData)
         self.region.setRegion((0,  len(self.xData) * .1 ))
 
-        
-
-    
     # this paints the verticle line in plot 1.
     # but it is buggy when the zoom is increased or decreased.
     # this seems to be a bug with pyqtgraph.
@@ -83,8 +78,15 @@ class Window(QMainWindow):
                 self.ui.priceLabel.setText("<span style='font-size: 12pt; color:white;'>Date=%s,   <span style='color: green'>Price=%0.1f</span>" % (self.xData[index], self.yData[index]))
                 self.vLine.setPos(mousePoint.x())
         
-    def resetChartClick(self):
-        pass
+    def resetChartClick(self, event):
+        self.plot2.setXRange(0, len(self.dataTuple[0]), padding=0)
+        self.plot2.setYRange(0, max(self.dataTuple[1]), padding=0)
+        self.plot1.setYRange(0, max(self.dataTuple[1]), padding=0)
+        self.region.setRegion((0,  len(self.xData) * .1 ))
+        
+        minX, maxX = self.region.getRegion()
+        self.plot1.setXRange(minX, maxX, padding=0)  
+
 
     def analyzeBtnClick(self):
         pass
