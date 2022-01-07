@@ -1,4 +1,3 @@
-   
 import math
 import pyqtgraph as pg
 import numpy as np
@@ -24,4 +23,3 @@ class MyStringAxis(pg.AxisItem):
                 vstr = ""
             strings.append(vstr)
         return strings
-
